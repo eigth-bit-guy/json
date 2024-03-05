@@ -20,7 +20,7 @@ int analyse_json_object(char **json, tree_data_json *object)
   }else
 	printf("Map success\n");
 
-  result = parser_simple_json(json, object);
+  result = loop_parser_json(json, object);
   if(result  != 0 ){
 	fprintf(stderr, "Error: when parser json: %s\n", strerror(errno));
 	return 1;
@@ -59,11 +59,11 @@ int map_json_object(char **json, tree_data_json *object)
   return 0;
 }
 
-int invok_parser_json(char **json, tree_data_json *object)
+int loop_parser_json(char **json, tree_data_json *object)
 {
   int flag = 1;
   int ret;
-  while(flag){
+  while(*json != '}'){
 	ret = parser_simple_json(json, object);
   }
 
