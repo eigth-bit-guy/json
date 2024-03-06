@@ -11,11 +11,6 @@
 //TODO : whitespace
 //TODO: allocate memory from inputed json
 
-/* static void whitespace_handler(char **json) */
-/* { */
-/*   while (**json  == '\t' || **json == '\r' || **json == '\n' || **json == ' ') ++(*json); */
-/* } */
-
 int analyse_json_object(char **json, tree_data_json *object)
 {
   int result;
