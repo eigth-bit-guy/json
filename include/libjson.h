@@ -19,18 +19,20 @@
 #define JSON_H
 
 enum json_values{
-  LIB_JSON_TYPE_STRING,
-  LIB_JSON_TYPE_CHAR,
-  LIB_JSON_TYPE_INT,
-  LIB_JSON_TYPE_BOOL,
-  LIB_JSON_TYPE_DOUBLE,
-  LIB_JSON_TYPE_KEY
+  LIB_JSON_TYPE_KEY,
+  LIB_JSON_TYPE_VALUE,
+  LIB_JSON_TYPE_COLON
 };
+
+typedef struct{
+  char *tokens;
+}json_tokens;
 
 typedef struct{
   size_t json_lenght;
   int type;
-  char *string;
+  char *value;
+  char *key;
   char ch;
   int num;
   int bool;
@@ -44,5 +46,11 @@ int analyse_json_object(char **json, tree_data_json *object);
 int map_json_object(char **json, tree_data_json *object);
 
 int parser_simple_json(char **json, tree_data_json *object);
+
+int get_json_lenght_from_file(FILE *file);
+
+char *get_json_file(char *file_path);
+
+void verify_value_position(char *new_value, tree_data_json *object);
 
 #endif
