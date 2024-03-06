@@ -59,11 +59,11 @@ int parser_simple_json(char **json, tree_data_json *object)
 {
   for(size_t i = 0; i < object->json_lenght; i++) {
 	switch(**json){
-	case '{': //start json
+	case '{': 
 	  object->type = LIB_JSON_TYPE_KEY;
 	  printf("type: %d\n", object->type);
 	  break;
-	case ':': //division json
+	case ':':
 	  object->type = LIB_JSON_TYPE_VALUE;
 	  printf("type: %d\n", object->type);
 	  break;
