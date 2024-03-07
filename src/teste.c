@@ -10,7 +10,9 @@ int main(void)
   int result;
   tree_data_json object;
   char *buffer;
-
+  object.tokens.k_idx = 0;
+  object.tokens.v_idx = 0;
+  
   buffer = get_json_file("teste.json");
   if(buffer == NULL){
 	fprintf(stderr, "Error: when get file json: error number: %d\nError message: %s\n", errno, strerror(errno));
@@ -23,7 +25,21 @@ int main(void)
   }else
 	printf("Analyse success\n");
 
-  printf("Lenght value: %d\nStart value: %d\nEnd value: %d\nKey value: %s\nString value: %s\n", object.json_lenght, object.start, object.end, object.key, object.value);
+  printf("Lenght value: %d\nStart value: %d\nEnd value: %d\n",
+		 object.json_lenght, object.start, object.end);
 
+  printf("Tokens value:\n");
+  printf("Keys: %s, %s, %s, %s\n",
+		 object.tokens.key[0],
+		 object.tokens.key[1],
+		 object.tokens.key[2],
+		 object.tokens.key[3]);
+  printf("Values: %s, %s, %s, %s\n",
+		 object.tokens.value[0],
+		 object.tokens.value[1],
+		 object.tokens.value[2],
+		 object.tokens.value[3]);
+  
   return 0;
+
 }

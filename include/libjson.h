@@ -25,20 +25,16 @@ enum json_values{
 };
 
 typedef struct{
-  char *tokens;
+  char key[10][10],
+	value[10][10];
+  int k_idx, v_idx;
 }json_tokens;
 
 typedef struct{
   size_t json_lenght;
   int type;
-  char *value;
-  char *key;
-  char ch;
-  int num;
-  int bool;
-  float flt;
-  int start;
-  int end;
+  json_tokens tokens;
+  int start, end;
 }tree_data_json;
 
 int analyse_json_object(char **json, tree_data_json *object);

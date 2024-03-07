@@ -61,16 +61,12 @@ int parser_simple_json(char **json, tree_data_json *object)
 	switch(**json){
 	case '{': 
 	  object->type = LIB_JSON_TYPE_KEY;
-	  printf("type: %d\n", object->type);
 	  break;
 	case ':':
 	  object->type = LIB_JSON_TYPE_VALUE;
-	  printf("type: %d\n", object->type);
 	  break;
 	case '"':
-	  printf("type: %d\n", object->type);
 	  ++*json;
-	  printf("String find\n");
 	  const char* start = *json;
 	  char* end = strchr(*json, '"');
 	  if (end) {
@@ -85,7 +81,6 @@ int parser_simple_json(char **json, tree_data_json *object)
 	  break;
 	case ',':
 	  object->type = LIB_JSON_TYPE_KEY;
-	  printf("type: %d\n", object->type);
 	  break;
 	case '}':
 	  printf("Json final\n");
@@ -102,11 +97,13 @@ void verify_value_position(char *new_value, tree_data_json *object)
 {
   if(object->type == LIB_JSON_TYPE_KEY){
 	object->type = LIB_JSON_TYPE_VALUE;
-    object->key = new_value;
+    strcpy(object->tokens.key[object->tokens.k_idx], new_value);
+	object->tokens.k_idx++;
   }
   else if(object->type == LIB_JSON_TYPE_VALUE){
 	object->type = LIB_JSON_TYPE_KEY;
-    object->value = new_value;
+    strcpy(object->tokens.value[object->tokens.v_idx], new_value);
+	object->tokens.v_idx++;
   }
 }
 
