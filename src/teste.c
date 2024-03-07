@@ -29,16 +29,6 @@ int main(void)
 		 object.json_lenght, object.start, object.end);
 
   printf("Tokens value:\n");
-  printf("Keys: %s, %s, %s, %s\n",
-		 object.tokens.key[0],
-		 object.tokens.key[1],
-		 object.tokens.key[2],
-		 object.tokens.key[3]);
-  printf("Values: %s, %s, %s, %s\n",
-		 object.tokens.value[0],
-		 object.tokens.value[1],
-		 object.tokens.value[2],
-		 object.tokens.value[3]);
   
   return 0;
 

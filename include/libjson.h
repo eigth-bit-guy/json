@@ -25,8 +25,8 @@ enum json_values{
 };
 
 typedef struct{
-  char key[10][10],
-	value[10][10];
+  char key[20][40],
+	value[20][40];
   int k_idx, v_idx;
 }json_tokens;
 

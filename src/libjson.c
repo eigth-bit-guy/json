@@ -101,6 +101,7 @@ void verify_value_position(char *new_value, tree_data_json *object)
 	object->tokens.k_idx++;
   }
   else if(object->type == LIB_JSON_TYPE_VALUE){
+	printf("new value: %s, address: %p\n", new_value, new_value);
 	object->type = LIB_JSON_TYPE_KEY;
     strcpy(object->tokens.value[object->tokens.v_idx], new_value);
 	object->tokens.v_idx++;
