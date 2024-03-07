@@ -18,6 +18,9 @@
 #ifndef JSON_H
 #define JSON_H
 
+#define LINE 15
+#define COLUMNS 50
+
 enum json_values{
   LIB_JSON_TYPE_KEY,
   LIB_JSON_TYPE_VALUE,
@@ -25,8 +28,8 @@ enum json_values{
 };
 
 typedef struct{
-  char key[20][40],
-	value[20][40];
+  char key[LINE][COLUMNS],
+	value[LINE][COLUMNS];
   int k_idx, v_idx;
 }json_tokens;
 
