@@ -29,6 +29,9 @@ int main(void)
 		 object.json_lenght, object.start, object.end);
 
   printf("Tokens value:\n");
+  for(int i = 0; i <= 7; i++) {
+	printf(": %s \n", object.tokens.value[i]);
+  }
   
   return 0;
 
