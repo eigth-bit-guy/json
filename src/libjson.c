@@ -12,9 +12,9 @@
 //TODO: allocate memory from inputed json
 
 //create a new json struct
-data_json new_json()
+tree_data_json new_json()
 {
-  return (data_json*)malloc(sizeof(data_json));
+  return (tree_data_json*)malloc(sizeof(tree_data_json));
 }
 
 int analyse_json_object(char **json, tree_data_json *object)
@@ -142,5 +142,5 @@ char *get_json_file(char *file_path)
 
 void free_json(data_json *json)
 {
-  //TODO: implemente-me please
+  free(json);
 }

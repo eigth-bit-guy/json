@@ -18,8 +18,8 @@
 #ifndef JSON_H
 #define JSON_H
 
-#define LINE 15
-#define COLUMNS 200
+#define LINE 8
+#define COLUMNS 30
 
 enum json_values{
   LIB_JSON_TYPE_KEY,
@@ -41,12 +41,7 @@ typedef struct{
   int start, end;
 }tree_data_json;
 
-typedef struct{
-  char *tokens;
-  
-}data_json;
-
-data_json new_json();
+tree_data_json new_json();
 
 int analyse_json_object(char **json, tree_data_json *object);
 
@@ -60,6 +55,6 @@ char *get_json_file(char *file_path);
 
 void verify_value_position(char *new_value, tree_data_json *object);
 
-void free_json(data_json *json);
+void free_json(tree_data_json *json);
 
 #endif
