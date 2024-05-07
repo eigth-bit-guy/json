@@ -19,7 +19,7 @@
 #define JSON_H
 
 #define LINE 15
-#define COLUMNS 50
+#define COLUMNS 200
 
 enum json_values{
   LIB_JSON_TYPE_KEY,
