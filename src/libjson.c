@@ -11,6 +11,12 @@
 //TODO : whitespace
 //TODO: allocate memory from inputed json
 
+//create a new json struct
+data_json new_json()
+{
+  return (data_json*)malloc(sizeof(data_json));
+}
+
 int analyse_json_object(char **json, tree_data_json *object)
 {
   int result;

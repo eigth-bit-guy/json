@@ -41,10 +41,12 @@ typedef struct{
   int start, end;
 }tree_data_json;
 
-struct{
+typedef struct{
   char *tokens;
   
 }data_json;
+
+data_json new_json();
 
 int analyse_json_object(char **json, tree_data_json *object);
 
