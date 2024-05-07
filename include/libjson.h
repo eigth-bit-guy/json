@@ -24,7 +24,8 @@
 enum json_values{
   LIB_JSON_TYPE_KEY,
   LIB_JSON_TYPE_VALUE,
-  LIB_JSON_TYPE_COLON
+  LIB_JSON_TYPE_COLON,
+  LIB_END_JSON
 };
 
 typedef struct{
@@ -40,6 +41,13 @@ typedef struct{
   int start, end;
 }tree_data_json;
 
+typedef struct{
+  char *tokens;
+  
+}data_json;
+
+data_json new_json();
+
 int analyse_json_object(char **json, tree_data_json *object);
 
 int map_json_object(char **json, tree_data_json *object);
@@ -51,5 +59,7 @@ int get_json_lenght_from_file(FILE *file);
 char *get_json_file(char *file_path);
 
 void verify_value_position(char *new_value, tree_data_json *object);
+
+void free_json(data_json *json);
 
 #endif

@@ -11,6 +11,12 @@
 //TODO : whitespace
 //TODO: allocate memory from inputed json
 
+//create a new json struct
+data_json new_json()
+{
+  return (data_json*)malloc(sizeof(data_json));
+}
+
 int analyse_json_object(char **json, tree_data_json *object)
 {
   int result;
@@ -84,9 +90,10 @@ int parser_simple_json(char **json, tree_data_json *object)
 	  break;
 	case '}':
 	  printf("Json final\n");
-	  break;
+	  return 0;
 	default:
-	  break;
+	  printf("Nothing value\n");
+	  return 0;
 	}
 	++*json;
   }
@@ -130,4 +137,9 @@ char *get_json_file(char *file_path)
   buffer[len] = '\0';
   fclose(file);
   return buffer;
+}
+
+void free_json(data_json *json)
+{
+  //TODO: implemente-me please
 }
