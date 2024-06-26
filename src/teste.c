@@ -7,30 +7,14 @@
 
 int main(void)
 {
+  jstok_t tok;
+
+  char *json = "{\"driver\":\"4\",\"prd\":\"ULTRA LAVAVEL PR FC - NOVO\",\"wgh\":\"0\",\"unt\":\"1.0000 1.0000\",\"clr\":\"218P-1 RUN 6\",\"bas\":\"BASE A\",\"can\":\"810\",\"frm\":\"1,0.0059,7,0.0345,9,0.0310 810\"}";
+
   int result;
-  tree_data_json object;
-  char *buffer;
-  object.tokens.k_idx = 0;
-  object.tokens.v_idx = 0;
-  
-  buffer = get_json_file("teste.json");
-  if(buffer == NULL){
-	fprintf(stderr, "Error: when get file json: error number: %d\nError message: %s\n", errno, strerror(errno));
+  if((result = parser_json(json, & tok)) != 0){
+	printf("Deu ruim meu bom...\n");
 	return 1;
-  }
-  
-  result = analyse_json_object(&buffer, &object);
-  if(result != 0){
-	fprintf(stderr, "Error: error when analyse json: %s\n", strerror(errno));
-  }else
-	printf("Analyse success\n");
-
-  printf("Lenght value: %d\nStart value: %d\nEnd value: %d\n",
-		 object.json_lenght, object.start, object.end);
-
-  printf("Tokens value:\n");
-  for(int i = 0; i <= 7; i++) {
-	printf(": %s \n", object.tokens.value[i]);
   }
   
   return 0;
