@@ -7,8 +7,19 @@
 
 #include "..\\include\\libjson.h"
 
-int parser_json(char *json, jstok_t *tok)
+void clean_tok_parse(jstok_parse *tok_parse)
 {
+  tok_parse->start = NULL;
+  tok_parse->end = NULL;
+  tok_parse->lenght = 0;
+}
+
+int parser_json(char *json, jstok_parse *tok_parse)
+{
+  //------------------------------------------
+  printf("json value: %s\n", json);
+  //------------------------------------------
+	
   int json_size = (int)strlen(json);
   printf("json size: %d\n", json_size);
   char *c = json;
@@ -16,23 +27,22 @@ int parser_json(char *json, jstok_t *tok)
   for(int i = 0; i != json_size; i++){
 	switch(*c){
 	case '{':
-	  printf("key\n");
-	  tok->type = JS_TYPE_KEY;
+	  tok_parse->type = JS_TYPE_KEY;
 	  break;
 	case '"':
-	  string_hadller(c, tok);
-	  tok->type = JS_TYPE_KEY;
+	  clean_tok_parse(tok_parse);
+	  string_hadller(c, tok_parse);
+	  if(tok_parse->type == JS_TYPE_VALUE) {
+		*c = tok_parse->lenght;
+	  }
 	  break;
 	case ':':
-	  printf("column\n");
-	  tok->type = JS_TYPE_VALUE;
+	  tok_parse->type = JS_TYPE_VALUE;
 	  break;
 	case ',':
-	  printf("virugla\n");
-	  tok->type = JS_TYPE_KEY;
+	  tok_parse->type = JS_TYPE_KEY;
 	  break;
 	case '}':
-	  printf("final\n");
 	  return 0; //json final
 	  break;
 	}
@@ -41,23 +51,27 @@ int parser_json(char *json, jstok_t *tok)
   return 0;
 }
 
-int string_hadller(char *js_ch, jstok_t *tok)
+void string_hadller(char *js_ch, jstok_parse *tok_parse)
 {
-  int i = 0;
-  js_ch++;
-  const char* start = js_ch;
-  char *end = strchr(js_ch, '"');
-  size_t len = end - start;
-  get_string_from_json(tok, js_ch, len, i);
-  *js_ch = end + 1; 
-  
-  i++;
-  return 1;
+  if(tok_parse->type == JS_TYPE_VALUE){
+	int i = 0;
+	js_ch++;
+    tok_parse->start = js_ch;
+    tok_parse->end = strchr(js_ch, '"');
+	if(tok_parse->start == NULL || tok_parse->end == NULL) {
+	  fprintf(stderr, "Error: string handller\n");
+	  exit(1);
+	}
+    tok_parse->lenght = tok_parse->end - tok_parse->start;
+	printf("lenght value: %d\n", tok_parse->lenght);
+	get_string_from_json(tok_parse, js_ch, tok_parse->lenght, i);
+	i++;
+  }
 }
 
-int get_string_from_json(jstok_t *tok, char *json, size_t len, int i)
+int get_string_from_json(jstok_parse *tok_parse, char *json, size_t len, int i)
 {
-  char token_buffer[20];
+  char token_buffer[len];
   strncpy(token_buffer, json, len);
   token_buffer[len] = '\0';
   printf("tokens: %s\n", token_buffer);
