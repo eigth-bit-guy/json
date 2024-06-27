@@ -28,16 +28,22 @@ enum {
   JS_TYPE_ERROR
 }jstok_type;
 
-typedef struct jstok {
+typedef struct jstok_parse {
   int type;
+  const char *start;
+  char *end;
+  size_t lenght;
+} jstok_parse;
+
+typedef struct jstok {
   char *tokens[16];
 }jstok_t;
 
 
-int parser_json(char *json, jstok_t *tok);
+int parser_json(char *json, jstok_parse *tok);
 
-int string_hadller(char *js_ch, jstok_t *tok);
+void string_hadller(char *js_ch, jstok_parse *tok);
 
-int get_string_from_json(jstok_t *tok, char *json, size_t len, int i);
+int get_string_from_json(jstok_parse *tok, char *json, size_t len, int i);
 
 #endif
