@@ -18,48 +18,26 @@
 #ifndef JSON_H
 #define JSON_H
 
-#define LINE 15
-#define COLUMNS 200
+enum {
+  JS_TYPE_KEY,
+  JS_TYPE_VALUE,
+  JS_TYPE_INT,
+  JS_TYPE_MATRIX,
+  JS_TYPE_STRING,
+  JS_TYPE_NULL,
+  JS_TYPE_ERROR
+}jstok_type;
 
-enum json_values{
-  LIB_JSON_TYPE_KEY,
-  LIB_JSON_TYPE_VALUE,
-  LIB_JSON_TYPE_COLON,
-  LIB_END_JSON
-};
-
-typedef struct{
-  char key[LINE][COLUMNS],
-	value[LINE][COLUMNS];
-  int k_idx, v_idx;
-}json_tokens;
-
-typedef struct{
-  size_t json_lenght;
+typedef struct jstok {
   int type;
-  json_tokens tokens;
-  int start, end;
-}tree_data_json;
+  char *tokens[16];
+}jstok_t;
 
-typedef struct{
-  char *tokens;
-  
-}data_json;
 
-data_json new_json();
+int parser_json(char *json, jstok_t *tok);
 
-int analyse_json_object(char **json, tree_data_json *object);
+int string_hadller(char *js_ch, jstok_t *tok);
 
-int map_json_object(char **json, tree_data_json *object);
-
-int parser_simple_json(char **json, tree_data_json *object);
-
-int get_json_lenght_from_file(FILE *file);
-
-char *get_json_file(char *file_path);
-
-void verify_value_position(char *new_value, tree_data_json *object);
-
-void free_json(data_json *json);
+int get_string_from_json(jstok_t *tok, char *json, size_t len, int i);
 
 #endif
