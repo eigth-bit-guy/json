@@ -30,10 +30,15 @@ int parser_json(char *json, jstok_parse *tok_parse)
 	  tok_parse->type = JS_TYPE_KEY;
 	  break;
 	case '"':
-	  //TENTAR MANTER SIMPLES E LIMPO
-	  clean_tok_parse(tok_parse);
-	  string_hadller(c, tok_parse);
-	  break;
+	  switch(tok_parse->type) {
+	  case JS_TYPE_VALUE:
+		//TENTAR MANTER SIMPLES E LIMPO
+		clean_tok_parse(tok_parse);
+		string_hadller(c, tok_parse);
+		break;
+	  case JS_TYPE_KEY:
+		break;
+	  }
 	case ':':
 	  tok_parse->type = JS_TYPE_VALUE;
 	  break;
