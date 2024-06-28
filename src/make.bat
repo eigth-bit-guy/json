@@ -1,3 +1,3 @@
 @echo
 
-gcc teste.c libjson.c -o json -Wall -Wextra -ggdb
+gcc main.c libjson.c -o json -Wall -Wextra -ggdb
