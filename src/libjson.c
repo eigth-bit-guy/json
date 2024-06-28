@@ -32,7 +32,6 @@ int parser_json(char *json, jstok_parse *tok_parse)
 	case '"':
 	  switch(tok_parse->type) {
 	  case JS_TYPE_VALUE:
-		//TENTAR MANTER SIMPLES E LIMPO
 		clean_tok_parse(tok_parse);
 		string_hadller(c, tok_parse);
 		break;
