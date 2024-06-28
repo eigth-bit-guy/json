@@ -18,6 +18,9 @@
 #ifndef JSON_H
 #define JSON_H
 
+#define SUCCESS 0
+#define FAILURE 1
+
 enum {
   JS_TYPE_KEY,
   JS_TYPE_VALUE,
@@ -26,24 +29,24 @@ enum {
   JS_TYPE_STRING,
   JS_TYPE_NULL,
   JS_TYPE_ERROR
-}jstok_type;
+}JSTOK_TYPE;
 
-typedef struct jstok_parse {
+typedef struct {
   int type;
   const char *start;
   char *end;
   size_t lenght;
-} jstok_parse;
+} JSTOK_PARSE;
 
-typedef struct jstok {
-  char *tokens[16];
-}jstok_t;
+typedef struct {
+  int token_count;
+  size_t token_lenght;
+  char *tokens[];
+}JSTOK_T;
 
 
-int parser_json(char *json, jstok_parse *tok);
+int parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
 
-void string_hadller(char *js_ch, jstok_parse *tok);
-
-int get_string_from_json(jstok_parse *tok, char *json, size_t len, int i);
+char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer);
 
 #endif
