@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "..\\include\\libjson.h"
+#include "libjson.h"
 
 JSTOK_T new_jstok_t()
 {

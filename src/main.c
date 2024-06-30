@@ -3,7 +3,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#include "..\\include\\libjson.h"
+#include "libjson.h"
 
 int main(void)
 {
