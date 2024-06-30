@@ -48,10 +48,6 @@ typedef struct{
 
 data_json new_json();
 
-int analyse_json_object(char **json, tree_data_json *object);
-
-int map_json_object(char **json, tree_data_json *object);
-
 int parser_simple_json(char **json, tree_data_json *object);
 
 int get_json_lenght_from_file(FILE *file);
