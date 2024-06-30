@@ -19,7 +19,7 @@ int main(void)
 	return 1;
   }
   
-  result = analyse_json_object(&buffer, &object);
+  result = parser_simple_json(&buffer, &object);
   if(result != 0){
 	fprintf(stderr, "Error: error when analyse json: %s\n", strerror(errno));
   }else
