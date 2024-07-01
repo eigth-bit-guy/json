@@ -32,6 +32,7 @@ enum {
 }JSTOK_TYPE;
 
 typedef struct {
+  int token_count;
   int type;
   const char *start;
   char *end;
@@ -39,14 +40,17 @@ typedef struct {
 } JSTOK_PARSE;
 
 typedef struct {
-  int token_count;
   size_t token_lenght;
-  char *tokens[];
+  char **tokens;
 }JSTOK_T;
 
 
-int parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
+JSTOK_T *new_jstok_t();
 
-char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer);
+JSTOK_T *parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
+
+char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer, JSTOK_T *tok_t, int x);
+
+void init_array_of_tokens(size_t str_lenght, char **tokens);
 
 #endif
