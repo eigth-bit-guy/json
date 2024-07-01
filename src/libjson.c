@@ -24,7 +24,7 @@
 #include "libjson.h"
 
 #define INITIAL_LINES 8
-#define MAX_STRING_LEN 30
+#define MAX_STRING_LEN 15
 
 JSTOK_T*
 new_jstok_t()
@@ -123,7 +123,7 @@ init_array_of_tokens(char** tokens)
 
   //FIX THAT SHIT
   //malloc faile in i = 7
-  for(int i = 0; i < INITIAL_LINES; i++) {
+  for(int i = 0; i <= INITIAL_LINES; i++) {
 	tokens[i] = (char*)malloc((MAX_STRING_LEN + 1) * sizeof(char));
 	if(tokens[i] == NULL) {
 	  fprintf(stderr, "error: allocation memory\n");
