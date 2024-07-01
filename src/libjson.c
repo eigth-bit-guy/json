@@ -31,7 +31,7 @@ new_jstok_t()
 
 JSTOK_T*
 parser_json(char *json, JSTOK_PARSE *tok_parse,
-					            JSTOK_T *jstok_t_object)
+			JSTOK_T *jstok_t_object)
 {
   int x = 0;
   char token_buffer[100];
@@ -119,7 +119,7 @@ init_array_of_tokens(char** tokens, int lines)
 
 void
 insert_token_on_array(size_t token_lenght, char **tokens,
-						                            int lines)
+					  int lines)
 {
   for(int i = 0; i != lines; i++) {
 	tokens[i] = (char*)malloc((token_lenght + 1) * sizeof(char));
