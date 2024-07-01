@@ -24,18 +24,19 @@
 int main(void)
 {
   JSTOK_PARSE tok_parse_obj;
-  JSTOK_T tok_t;
+  JSTOK_T *tok_t = new_jstok_t();
+  if(tok_t == NULL) {
+	fprintf(stderr, "error: initialize JSTOK_T\n");
+	exit(1);
+  }
 
   /* char *json = "{\"driver\":\"4\",\"prd\":\"ULTRA LAVAVEL PR FC - NOVO\",\"wgh\":\"0\",\"unt\":\"1.0000 1.0000\",\"clr\":\"218P-1 RUN 6\",\"bas\":\"BASE A\",\"can\":\"810\",\"frm\":\"1,0.0059,7,0.0345,9,0.0310 810\"}"; */
+  /* char *json = "{\"msg\":\"testando\",\"msg\":\"teste\",\"msg\":\"samuel\"}"; */
 
-  char *json = "{\"msg\":\"testando\",\"msg\":\"teste\",\"msg\":\"samuel\"}";
+  char *json = "{\"msg\":\"teste\", \"msg\":\"samuel\"}";
+  tok_t = parser_json(json, &tok_parse_obj, tok_t);
 
-  int result;
-  if((result = parser_json(json, &tok_parse_obj, &tok_t)) != 0){
-	printf("Deu ruim meu bom...\n");
-	return 1;
-  }
-  
+  free(tok_t);
   return 0;
 
 }
