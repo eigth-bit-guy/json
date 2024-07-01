@@ -40,7 +40,7 @@ typedef struct {
 } JSTOK_PARSE;
 
 typedef struct {
-  size_t token_lenght;
+  int index_count;
   char **tokens;
 }JSTOK_T;
 
@@ -51,6 +51,12 @@ JSTOK_T *parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
 
 char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer, JSTOK_T *tok_t, int x);
 
-void init_array_of_tokens(size_t str_lenght, char **tokens);
+void init_array_of_tokens(char **tokens);
+
+void insert_token_on_array(size_t token_lenght, char **tokens, char *token_buffer);
+
+void destroy_array_of_tokens(char **array_of_tokens, int index);
+
+void destroy_jstok_t(JSTOK_T *tok_t);
 
 #endif

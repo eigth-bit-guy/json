@@ -23,6 +23,9 @@
 
 #include "libjson.h"
 
+#define INITIAL_LINES 8
+#define MAX_STRING_LEN 30
+
 JSTOK_T*
 new_jstok_t()
 {
@@ -38,6 +41,8 @@ parser_json(char *json, JSTOK_PARSE *tok_parse,
   size_t json_size = strlen(json);
   printf("json size: %d\n", json_size);
   char *c = json;
+  
+  init_array_of_tokens(jstok_t_object->tokens);
   
   for(size_t i = 0; i <= json_size; i++){
 	switch(*c){
@@ -66,11 +71,7 @@ parser_json(char *json, JSTOK_PARSE *tok_parse,
 	}
 	c++;
   }
-  //print tokens
-  for(int z = 0; z <= 1; ++z){
-	printf("Tokens: %s\n", jstok_t_object->tokens[z]);
-  }
-  
+
   return jstok_t_object;
 }
 
@@ -103,31 +104,57 @@ string_hadller(char *json, JSTOK_PARSE *tok_parse,
 	exit(1);
   }
   
+  insert_token_on_array(tok_parse->lenght,
+			tok_t->tokens, token_buffer);
+
+  x++;
+  tok_t->index_count += 1;
   return tok_parse->end;
 }
 
-//TODO: add dynamic lines for json tokens
 void
-init_array_of_tokens(char** tokens, int lines)
+init_array_of_tokens(char** tokens)
 {
-  tokens = (char**)malloc(lines * sizeof(char));
+  tokens = (char**)malloc(INITIAL_LINES * sizeof(char));
   if(tokens == NULL) {
-	fprintf(stderr, "error: token alocation memory\n");
-	exit(1);
+	fprintf(stderr, "error: token alocation\n");
+	exit(FAILURE);
   }
+
+  //FIX THAT SHIT
+  //malloc faile in i = 7
+  for(int i = 0; i < INITIAL_LINES; i++) {
+	tokens[i] = (char*)malloc((MAX_STRING_LEN + 1) * sizeof(char));
+	if(tokens[i] == NULL) {
+	  fprintf(stderr, "error: allocation memory\n");
+	  exit(FAILURE);
+	}
+  }
+
 }
 
 void
 insert_token_on_array(size_t token_lenght, char **tokens,
-					  int lines)
+					  char *token_buffer)
 {
-  for(int i = 0; i != lines; i++) {
-	tokens[i] = (char*)malloc((token_lenght + 1) * sizeof(char));
-	if(tokens[i] == NULL) {
-	  fprintf(stderr, "error: memory allocation failed\n");
-	  exit(1);
-	}
-  }
+  tokens[0] = token_buffer;
+  printf("token value: %s\n", tokens[0]);
+}
 
-  
+void
+destroy_array_of_tokens(char **tokens, int index)
+{
+  for(int i = 0; i <= index; i++) {
+	free(tokens[i]);
+  }
+  free(tokens);
+}
+
+void
+destroy_jstok_t(JSTOK_T *tok_t)
+{
+  if(tok_t->tokens != NULL) {
+	destroy_array_of_tokens(tok_t->tokens, tok_t->index_count);
+  }
+  free(tok_t);
 }
