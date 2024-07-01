@@ -134,6 +134,12 @@ init_array_of_tokens(char** tokens)
 }
 
 void
+array_push(char *string, char **array)
+{
+  //TODO: implement
+}
+
+void
 insert_token_on_array(size_t token_lenght, char **tokens,
 					  char *token_buffer)
 {
