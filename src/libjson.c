@@ -32,17 +32,6 @@ new_jstok_t()
   return (JSTOK_T*)malloc(sizeof(JSTOK_T));
 }
 
-<<<<<<< HEAD
-int parser_simple_json(char **json, tree_data_json *object)
-{
-  for(size_t i = 0; i < object->json_lenght; i++) {
-	switch(**json){
-	case '{': 
-	  object->type = LIB_JSON_TYPE_KEY;
-	  break;
-	case ':':
-	  object->type = LIB_JSON_TYPE_VALUE;
-=======
 JSTOK_T*
 parser_json(char *json, JSTOK_PARSE *tok_parse,
 			JSTOK_T *jstok_t_object)
@@ -59,7 +48,6 @@ parser_json(char *json, JSTOK_PARSE *tok_parse,
 	switch(*c){
 	case '{':
 	  tok_parse->type = JS_TYPE_KEY;
->>>>>>> refatoracao_jsonlib
 	  break;
 	case '"':
 	  if(tok_parse->type == JS_TYPE_VALUE) {
