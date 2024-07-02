@@ -129,13 +129,13 @@ init_array_of_tokens(char** tokens)
 	  exit(FAILURE);
 	}
   }
-
 }
 
 void
 array_push(char *string, char **array)
 {
   //TODO: implement
+  //TODO: verify size of array for dynamic allocation
 }
 
 void
