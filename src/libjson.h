@@ -55,6 +55,8 @@ void init_array_of_tokens(char **tokens);
 
 void insert_token_on_array(size_t token_lenght, char **tokens, char *token_buffer);
 
+void array_push(char *string, char **array);
+
 void destroy_array_of_tokens(char **array_of_tokens, int index);
 
 void destroy_jstok_t(JSTOK_T *tok_t);
