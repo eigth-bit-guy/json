@@ -53,7 +53,7 @@ char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer, JSTOK_T 
 
 void init_array_of_tokens(char **tokens);
 
-void insert_token_on_array(size_t token_lenght, char **tokens, char *token_buffer);
+void insert_token_on_array(char **tokens, char *token_buffer);
 
 void array_push(char *string, char **array);
 
