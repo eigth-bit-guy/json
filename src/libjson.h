@@ -45,15 +45,11 @@ typedef struct {
 }JSTOK_T;
 
 
-<<<<<<< HEAD:include/libjson.h
-int parser_simple_json(char **json, tree_data_json *object);
-=======
 JSTOK_T *new_jstok_t();
 
 JSTOK_T *parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
 
 char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer, JSTOK_T *tok_t, int x);
->>>>>>> refatoracao_jsonlib:src/libjson.h
 
 void init_array_of_tokens(char **tokens);
 
