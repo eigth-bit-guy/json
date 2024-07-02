@@ -104,8 +104,7 @@ string_hadller(char *json, JSTOK_PARSE *tok_parse,
 	exit(1);
   }
   
-  insert_token_on_array(tok_parse->lenght,
-			tok_t->tokens, token_buffer);
+  insert_token_on_array(tok_t->tokens, token_buffer);
 
   x++;
   tok_t->index_count += 1;
@@ -140,7 +139,7 @@ array_push(char *string, char **array)
 }
 
 void
-insert_token_on_array(size_t token_lenght, char **tokens,
+insert_token_on_array(char **tokens,
 					  char *token_buffer)
 {
   tokens[0] = token_buffer;
