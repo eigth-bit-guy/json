@@ -1,3 +1,19 @@
+/* Copyright (C) 2024  Samuel Henrique */
+
+/* This program is free software: you can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation, either version 3 of the License, or */
+/* (at your option) any later version. */
+
+/* This program is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* GNU General Public License for more details. */
+
+/* You should have received a copy of the GNU General Public License */
+/* along with this program.  If not, see <https://www.gnu.org/licenses/>. */
+
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -5,18 +21,18 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include "..\\include\\libjson.h"
+#include "libjson.h"
 
-//Rewrite json -> libjson
-//TODO : whitespace
-//TODO: allocate memory from inputed json
+#define INITIAL_LINES 8
+#define MAX_STRING_LEN 15
 
-//create a new json struct
-data_json new_json()
+JSTOK_T*
+new_jstok_t()
 {
-  return (data_json*)malloc(sizeof(data_json));
+  return (JSTOK_T*)malloc(sizeof(JSTOK_T));
 }
 
+<<<<<<< HEAD
 int parser_simple_json(char **json, tree_data_json *object)
 {
   for(size_t i = 0; i < object->json_lenght; i++) {
@@ -26,76 +42,137 @@ int parser_simple_json(char **json, tree_data_json *object)
 	  break;
 	case ':':
 	  object->type = LIB_JSON_TYPE_VALUE;
+=======
+JSTOK_T*
+parser_json(char *json, JSTOK_PARSE *tok_parse,
+			JSTOK_T *jstok_t_object)
+{
+  int x = 0;
+  char token_buffer[100];
+  size_t json_size = strlen(json);
+  printf("json size: %d\n", json_size);
+  char *c = json;
+  
+  init_array_of_tokens(jstok_t_object->tokens);
+  
+  for(size_t i = 0; i <= json_size; i++){
+	switch(*c){
+	case '{':
+	  tok_parse->type = JS_TYPE_KEY;
+>>>>>>> refatoracao_jsonlib
 	  break;
 	case '"':
-	  ++*json;
-	  const char* start = *json;
-	  char* end = strchr(*json, '"');
-	  if (end) {
-		size_t len = end - start;
-		char *new_value = malloc((len + 1) * sizeof(char));
-		memcpy(new_value, start, len);
-		new_value[len] = '\0';
-		assert(len == strlen(new_value));
-		*json = end + 1;
-		verify_value_position(new_value, object);
+	  if(tok_parse->type == JS_TYPE_VALUE) {
+		c++;
+		char *ch_offset = string_hadller(c, tok_parse,
+					  token_buffer, jstok_t_object, x);
+		c = ch_offset;
+		break;
+	  }else if(tok_parse->type == JS_TYPE_KEY) {
+		break;
 	  }
+	case ':':
+	  tok_parse->type = JS_TYPE_VALUE;
 	  break;
 	case ',':
-	  object->type = LIB_JSON_TYPE_KEY;
+	  tok_parse->type = JS_TYPE_KEY;
 	  break;
 	case '}':
-	  printf("Json final\n");
-	  return 0;
-	default:
-	  printf("Nothing value\n");
-	  return 0;
+	  i = json_size;
+	  break;
 	}
-	++*json;
+	c++;
   }
-  return 0;
+
+  return jstok_t_object;
 }
 
-void verify_value_position(char *new_value, tree_data_json *object)
+char*
+string_hadller(char *json, JSTOK_PARSE *tok_parse,
+			   char *token_buffer, JSTOK_T *tok_t, int x)
 {
-  if(object->type == LIB_JSON_TYPE_KEY){
-	object->type = LIB_JSON_TYPE_VALUE;
-    strcpy(object->tokens.key[object->tokens.k_idx], new_value);
-	object->tokens.k_idx++;
+  char *tok = json;
+  if(tok++ == NULL){
+	fprintf(stderr, "error: invalid token\n");
+	exit(FAILURE);
   }
-  else if(object->type == LIB_JSON_TYPE_VALUE){
-	object->type = LIB_JSON_TYPE_KEY;
-    strcpy(object->tokens.value[object->tokens.v_idx], new_value);
-	object->tokens.v_idx++;
+  
+  tok_parse->start = json;
+  tok_parse->end = strchr(tok_parse->start, '"');
+  tok_parse->lenght = tok_parse->end - tok_parse->start;
+	  
+  printf("lenght value: %d\n", tok_parse->lenght);
+
+  if(token_buffer == NULL) {
+	fprintf(stderr, "error: string handller\n");
+	exit(1);
   }
+
+  strncpy(token_buffer, json, tok_parse->lenght);
+  token_buffer[tok_parse->lenght] = '\0';
+
+  if(tok_t == NULL) {
+	fprintf(stderr, "error: JSTOK_T null\n");
+	exit(1);
+  }
+  
+  insert_token_on_array(tok_parse->lenght,
+			tok_t->tokens, token_buffer);
+
+  x++;
+  tok_t->index_count += 1;
+  return tok_parse->end;
 }
 
-int get_json_lenght_from_file(FILE *file)
+void
+init_array_of_tokens(char** tokens)
 {
-  fseek(file, 0L, SEEK_END);
-  int len =  ftell(file);
-  fseek(file, 0L, SEEK_SET);
-  rewind(file);
-  return len;
+  tokens = (char**)malloc(INITIAL_LINES * sizeof(char));
+  if(tokens == NULL) {
+	fprintf(stderr, "error: token alocation\n");
+	exit(FAILURE);
+  }
+
+  //FIX THAT SHIT
+  //malloc faile in i = 7
+  for(int i = 0; i <= INITIAL_LINES; i++) {
+	tokens[i] = (char*)malloc((MAX_STRING_LEN + 1) * sizeof(char));
+	if(tokens[i] == NULL) {
+	  fprintf(stderr, "error: allocation memory\n");
+	  exit(FAILURE);
+	}
+  }
+
 }
 
-char *get_json_file(char *file_path)
+void
+array_push(char *string, char **array)
 {
-  FILE *file;
-  if((file = fopen(file_path, "r")) == 0){
-	fprintf(stderr, "Error: when open json file: error number: %d\nError message: %s\n", errno, strerror(errno));
-  }
-  int len = get_json_lenght_from_file(file);
-  char *buffer = malloc(sizeof(char) * len);
-  if((len = fread(buffer, sizeof(char), len, file)) == 0){
-	fprintf(stderr, "Error: when read file: error number: %d\nError message: %s\n", errno, strerror(errno));
-  }
-  buffer[len] = '\0';
-  fclose(file);
-  return buffer;
+  //TODO: implement
 }
 
-void free_json(data_json *json)
+void
+insert_token_on_array(size_t token_lenght, char **tokens,
+					  char *token_buffer)
 {
-  //TODO: implemente-me please
+  tokens[0] = token_buffer;
+  printf("token value: %s\n", tokens[0]);
+}
+
+void
+destroy_array_of_tokens(char **tokens, int index)
+{
+  for(int i = 0; i <= index; i++) {
+	free(tokens[i]);
+  }
+  free(tokens);
+}
+
+void
+destroy_jstok_t(JSTOK_T *tok_t)
+{
+  if(tok_t->tokens != NULL) {
+	destroy_array_of_tokens(tok_t->tokens, tok_t->index_count);
+  }
+  free(tok_t);
 }

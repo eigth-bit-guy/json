@@ -18,44 +18,51 @@
 #ifndef JSON_H
 #define JSON_H
 
-#define LINE 15
-#define COLUMNS 200
+#define SUCCESS 0
+#define FAILURE 1
 
-enum json_values{
-  LIB_JSON_TYPE_KEY,
-  LIB_JSON_TYPE_VALUE,
-  LIB_JSON_TYPE_COLON,
-  LIB_END_JSON
-};
+enum {
+  JS_TYPE_KEY,
+  JS_TYPE_VALUE,
+  JS_TYPE_INT,
+  JS_TYPE_MATRIX,
+  JS_TYPE_STRING,
+  JS_TYPE_NULL,
+  JS_TYPE_ERROR
+}JSTOK_TYPE;
 
-typedef struct{
-  char key[LINE][COLUMNS],
-	value[LINE][COLUMNS];
-  int k_idx, v_idx;
-}json_tokens;
-
-typedef struct{
-  size_t json_lenght;
+typedef struct {
+  int token_count;
   int type;
-  json_tokens tokens;
-  int start, end;
-}tree_data_json;
+  const char *start;
+  char *end;
+  size_t lenght;
+} JSTOK_PARSE;
 
-typedef struct{
-  char *tokens;
-  
-}data_json;
+typedef struct {
+  int index_count;
+  char **tokens;
+}JSTOK_T;
 
-data_json new_json();
 
+<<<<<<< HEAD:include/libjson.h
 int parser_simple_json(char **json, tree_data_json *object);
+=======
+JSTOK_T *new_jstok_t();
 
-int get_json_lenght_from_file(FILE *file);
+JSTOK_T *parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
 
-char *get_json_file(char *file_path);
+char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer, JSTOK_T *tok_t, int x);
+>>>>>>> refatoracao_jsonlib:src/libjson.h
 
-void verify_value_position(char *new_value, tree_data_json *object);
+void init_array_of_tokens(char **tokens);
 
-void free_json(data_json *json);
+void insert_token_on_array(size_t token_lenght, char **tokens, char *token_buffer);
+
+void array_push(char *string, char **array);
+
+void destroy_array_of_tokens(char **array_of_tokens, int index);
+
+void destroy_jstok_t(JSTOK_T *tok_t);
 
 #endif
