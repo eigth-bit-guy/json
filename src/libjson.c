@@ -32,10 +32,12 @@ new_jstok_t()
   return (JSTOK_T*)malloc(sizeof(JSTOK_T));
 }
 
+
 JSTOK_T*
 parser_json(char *json, JSTOK_PARSE *tok_parse,
 			JSTOK_T *jstok_t_object)
 {
+  tok_parse->capacity = MAX_STRING_LEN;
   int x = 0;
   char token_buffer[100];
   size_t json_size = strlen(json);
@@ -104,7 +106,7 @@ string_hadller(char *json, JSTOK_PARSE *tok_parse,
 	exit(1);
   }
   
-  insert_token_on_array(tok_t->tokens, token_buffer);
+  insert_token_on_array(tok_parse, tok_t->tokens, token_buffer, x);
 
   x++;
   tok_t->index_count += 1;
@@ -120,8 +122,6 @@ init_array_of_tokens(char** tokens)
 	exit(FAILURE);
   }
 
-  //FIX THAT SHIT
-  //malloc faile in i = 7
   for(int i = 0; i <= INITIAL_LINES; i++) {
 	tokens[i] = (char*)malloc((MAX_STRING_LEN + 1) * sizeof(char));
 	if(tokens[i] == NULL) {
@@ -132,18 +132,21 @@ init_array_of_tokens(char** tokens)
 }
 
 void
-array_push(char *string, char **array)
+insert_token_on_array(JSTOK_PARSE *tok_parse,
+					  char **tokens,
+					  char *token_buffer, int x)
 {
-  //TODO: implement
-  //TODO: verify size of array for dynamic allocation
-}
-
-void
-insert_token_on_array(char **tokens,
-					  char *token_buffer)
-{
-  tokens[0] = token_buffer;
-  printf("token value: %s\n", tokens[0]);
+  if(tok_parse->lenght > 0 && tok_parse->capacity % MAX_STRING_LEN == 0) {
+	tok_parse->capacity = (tok_parse->lenght / MAX_STRING_LEN + 1) * MAX_STRING_LEN;
+	tokens = realloc(*(tokens+x), tok_parse->capacity * sizeof(char));
+	if(sizeof(*(tokens+x) <= tok_parse->capacity)) {
+	  fprintf(stderr, "error: when realloc memory\n");
+	  exit(FAILURE);
+	}
+  }
+  
+  *(tokens+x) = token_buffer;
+  printf("token value: %s\n", *(tokens));
 }
 
 void
