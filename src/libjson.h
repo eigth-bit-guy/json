@@ -1,5 +1,3 @@
-/* This program aims to separate the values ​​of a json */
-
 /* Copyright (C) 2024  Samuel Henrique */
 
 /* This program is free software: you can redistribute it and/or modify */
@@ -21,7 +19,7 @@
 #define SUCCESS 0
 #define FAILURE 1
 
-enum {
+extern enum {
   JS_TYPE_KEY,
   JS_TYPE_VALUE,
   JS_TYPE_INT,
@@ -31,35 +29,40 @@ enum {
   JS_TYPE_ERROR
 }JSTOK_TYPE;
 
+/* typedef struct { */
+/*   int capacity; */
+/*   int token_count; */
+/*   int type; */
+/*   const char *start; */
+/*   char *end; */
+/*   size_t lenght; */
+/* }TOK_OBJ_PARSE; */
+
 typedef struct {
-  int capacity;
-  int token_count;
+  int str_count;
   int type;
-  const char *start;
-  char *end;
-  size_t lenght;
-} JSTOK_PARSE;
+  int x;
+  char **array;
+}TOK_OBJ;
 
 typedef struct {
-  int index_count;
-  char **tokens;
-}JSTOK_T;
+  TOK_OBJ obj;
+}TOK_OBJ_PARSE;
 
+TOK_OBJ_PARSE *new_tok_obj();
 
-JSTOK_T *new_jstok_t();
+TOK_OBJ_PARSE *alloc_string_array(TOK_OBJ_PARSE *tokens);
 
-JSTOK_T *parser_json(char *json, JSTOK_PARSE *tok, JSTOK_T *tok_t);
+TOK_OBJ_PARSE *alloc_string(TOK_OBJ_PARSE *tokens, size_t lenght);
 
-char *string_hadller(char *js_ch, JSTOK_PARSE *tok, char *token_buffer, JSTOK_T *tok_t, int x);
+int parser_json(char *json, TOK_OBJ_PARSE *tokens);
 
-void init_array_of_tokens(char **tokens);
+TOK_OBJ_PARSE *resize_tok_obj(TOK_OBJ_PARSE *tokens, size_t diff);
 
-void insert_token_on_array(JSTOK_PARSE *tok_parse, char **tokens, char *token_buffer, int x);
+char *string_hadller(char *json, TOK_OBJ_PARSE *tokens);
 
-void array_push(char *string, char **array);
+void destroy_strings(TOK_OBJ_PARSE *tokens);
 
-void destroy_array_of_tokens(char **array_of_tokens, int index);
-
-void destroy_jstok_t(JSTOK_T *tok_t);
+void destroy_object(TOK_OBJ_PARSE *tokens);
 
 #endif

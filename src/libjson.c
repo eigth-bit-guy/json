@@ -20,149 +20,151 @@
 #include <errno.h>
 #include <assert.h>
 #include <stdlib.h>
-
 #include "libjson.h"
 
-#define INITIAL_LINES 8
-#define MAX_STRING_LEN 15
+#define COLUMNS 50
 
-JSTOK_T*
-new_jstok_t()
+TOK_OBJ_PARSE *new_tok_obj()
 {
-  return (JSTOK_T*)malloc(sizeof(JSTOK_T));
+  return (TOK_OBJ_PARSE*)malloc(sizeof(TOK_OBJ_PARSE));
 }
 
-
-JSTOK_T*
-parser_json(char *json, JSTOK_PARSE *tok_parse,
-			JSTOK_T *jstok_t_object)
+TOK_OBJ_PARSE *alloc_string_array(TOK_OBJ_PARSE *tokens)
 {
-  tok_parse->capacity = MAX_STRING_LEN;
-  int x = 0;
-  char token_buffer[100];
-  size_t json_size = strlen(json);
-  printf("json size: %d\n", json_size);
-  char *c = json;
+  const int LINES = 8;
   
-  init_array_of_tokens(jstok_t_object->tokens);
+  tokens->obj.array = (char**)malloc(LINES * sizeof(char*));
+  if(tokens->obj.array == NULL) {
+	fprintf(stderr, "error: allocate string array\n");
+	exit(1);
+  }
+  return tokens;
+}
+
+TOK_OBJ_PARSE *alloc_string(TOK_OBJ_PARSE *tokens, size_t lenght)
+{
+  tokens->obj.array[tokens->obj.x] = (char*)malloc((lenght + 1) * sizeof(char));
+  if(tokens->obj.array[tokens->obj.x] == NULL) {
+	fprintf(stderr, "error: allocate strin value\n");
+	exit(1);
+  }
+  tokens->obj.str_count++;
+  return tokens;
+}
+
+TOK_OBJ_PARSE *resize_tok_obj(TOK_OBJ_PARSE *tokens, size_t diff)
+{
+  tokens->obj.array[tokens->obj.x] = (char*)realloc(tokens->obj.array, diff * sizeof(char));
+  if(tokens->obj.array[tokens->obj.x] == NULL){
+	fprintf(stderr, "realloc error\n");
+        return NULL;
+  }
+  return tokens;
+}
+
+void init_obj(TOK_OBJ_PARSE *tokens)
+{
+  tokens->obj.x = 0;
+  tokens->obj.str_count = 0;
+}
+
+int parser_json(char *json, TOK_OBJ_PARSE *tokens)
+{
+  size_t json_lenght = strlen(json);
   
-  for(size_t i = 0; i <= json_size; i++){
-	switch(*c){
-	case '{':
-	  tok_parse->type = JS_TYPE_KEY;
+  for(size_t i = 0; i < json_lenght; i++) {
+	switch(*json){
+	case '{': 
+	  tokens->obj.type = JS_TYPE_KEY;
+	  break;
+	case ':':
+	  tokens->obj.type = JS_TYPE_VALUE;
 	  break;
 	case '"':
-	  if(tok_parse->type == JS_TYPE_VALUE) {
-		c++;
-		char *ch_offset = string_hadller(c, tok_parse,
-					  token_buffer, jstok_t_object, x);
-		c = ch_offset;
+	  if(tokens->obj.type == JS_TYPE_VALUE) {
+		char *ch_end = string_hadller(json, tokens);
+		json = ch_end;
 		break;
-	  }else if(tok_parse->type == JS_TYPE_KEY) {
-		break;
-	  }
-	case ':':
-	  tok_parse->type = JS_TYPE_VALUE;
-	  break;
+	  }else
+	    break;
 	case ',':
-	  tok_parse->type = JS_TYPE_KEY;
+	  tokens->obj.type = JS_TYPE_KEY;
 	  break;
 	case '}':
-	  i = json_size;
-	  break;
+	  return 0;
 	}
-	c++;
+	++json;
   }
-
-  return jstok_t_object;
+  return -1;
 }
 
 char*
-string_hadller(char *json, JSTOK_PARSE *tok_parse,
-			   char *token_buffer, JSTOK_T *tok_t, int x)
+string_hadller(char *json,
+	       TOK_OBJ_PARSE *tokens)
 {
   char *tok = json;
   if(tok++ == NULL){
 	fprintf(stderr, "error: invalid token\n");
-	exit(FAILURE);
+	exit(1);
   }
+  ++json;
+  const char *start  = json;
+  char *end = strchr(start, '"');
+  size_t lenght = end - start;
   
-  tok_parse->start = json;
-  tok_parse->end = strchr(tok_parse->start, '"');
-  tok_parse->lenght = tok_parse->end - tok_parse->start;
-	  
-  printf("lenght value: %d\n", tok_parse->lenght);
+  /* printf("lenght value: %ld\n", lenght); */
 
+  char *token_buffer = malloc(sizeof(char) * (lenght + 1));
   if(token_buffer == NULL) {
 	fprintf(stderr, "error: string handller\n");
 	exit(1);
   }
 
-  strncpy(token_buffer, json, tok_parse->lenght);
-  token_buffer[tok_parse->lenght] = '\0';
+  /* assert(lenght == sizeof(token_buffer)); */
+  strncpy(token_buffer, json, lenght);
+  token_buffer[lenght] = '\0';
 
-  if(tok_t == NULL) {
-	fprintf(stderr, "error: JSTOK_T null\n");
+  tokens = alloc_string(tokens, lenght);
+  if(tokens->obj.array[tokens->obj.x] == NULL) {
+	fprintf(stderr, "erro: allocate string\n");
 	exit(1);
   }
-  
-  insert_token_on_array(tok_parse, tok_t->tokens, token_buffer, x);
 
-  x++;
-  tok_t->index_count += 1;
-  return tok_parse->end;
-}
-
-void
-init_array_of_tokens(char** tokens)
-{
-  tokens = (char**)malloc(INITIAL_LINES * sizeof(char));
-  if(tokens == NULL) {
-	fprintf(stderr, "error: token alocation\n");
-	exit(FAILURE);
-  }
-
-  for(int i = 0; i <= INITIAL_LINES; i++) {
-	tokens[i] = (char*)malloc((MAX_STRING_LEN + 1) * sizeof(char));
-	if(tokens[i] == NULL) {
-	  fprintf(stderr, "error: allocation memory\n");
-	  exit(FAILURE);
-	}
-  }
-}
-
-void
-insert_token_on_array(JSTOK_PARSE *tok_parse,
-					  char **tokens,
-					  char *token_buffer, int x)
-{
-  if(tok_parse->lenght > 0 && tok_parse->capacity % MAX_STRING_LEN == 0) {
-	tok_parse->capacity = (tok_parse->lenght / MAX_STRING_LEN + 1) * MAX_STRING_LEN;
-	tokens = realloc(*(tokens+x), tok_parse->capacity * sizeof(char));
-	if(sizeof(*(tokens+x) <= tok_parse->capacity)) {
-	  fprintf(stderr, "error: when realloc memory\n");
-	  exit(FAILURE);
-	}
+  if(lenght > COLUMNS) {
+    size_t diff = lenght - COLUMNS;
+    fprintf(stderr, "error: string maior que o buffer, a string contem %ld a mais\n", diff);
+    tokens = resize_tok_obj(tokens, diff);
+    if(tokens->obj.array[tokens->obj.x] == NULL) {
+      fprintf(stderr, "error: when realloc string lenght\n");
+      exit(1);
+    }
+    printf("%ld bytes foram allocados\n", diff);
   }
   
-  *(tokens+x) = token_buffer;
-  printf("token value: %s\n", *(tokens));
+  strncpy(tokens->obj.array[tokens->obj.x], token_buffer, lenght);
+  tokens->obj.array[tokens->obj.x][lenght] = '\0';
+  free(token_buffer);
+  if(strlen(tokens->obj.array[tokens->obj.x]) < 1) {
+	exit(1);
+  }
+  /* printf("token: %s\n", tokens->array[tokens->x]); */
+  
+  tokens->obj.x++;
+  tokens->obj.type = JS_TYPE_KEY;
+  return end;
 }
 
-void
-destroy_array_of_tokens(char **tokens, int index)
+void destroy_strings(TOK_OBJ_PARSE *tokens)
 {
-  for(int i = 0; i <= index; i++) {
-	free(tokens[i]);
+  if(tokens->obj.str_count > 0) {
+    for(int i = 0; i <= tokens->obj.str_count; i++){
+      free(tokens->obj.array[i]);
+    }
+    destroy_object(tokens);
   }
+}
+
+void destroy_object(TOK_OBJ_PARSE *tokens)
+{
   free(tokens);
-}
-
-void
-destroy_jstok_t(JSTOK_T *tok_t)
-{
-  if(tok_t->tokens != NULL) {
-	destroy_array_of_tokens(tok_t->tokens, tok_t->index_count);
-  }
-  free(tok_t);
 }
